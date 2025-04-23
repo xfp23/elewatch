@@ -4,7 +4,7 @@
 #pragma anon_unions
 
 #include "main.h"
-#include "tim.h"
+//#include "tim.h"
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
@@ -14,6 +14,9 @@
 //#include "cJSON.h"
 #include "stdint.h"
 #include "74HC595.h"
+#include "FreeRTOSConfig.h" 
+#include "FreeRTOS.h" 
+#include "task.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -70,7 +73,10 @@ extern volatile UserTim_t UserTim;       // 系统定时器
 extern volatile UserCommon_t UserCommon; // 用户公共体
 
 extern void Set_PWM_DutyCycle(float duty);
-extern void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
+//extern void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
+extern void RunTime(void *p);
+extern void LedTask(void *p);
+extern void DisplayTime(void *p);
 
 #ifdef __cplusplus
 }

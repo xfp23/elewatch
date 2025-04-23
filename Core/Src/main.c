@@ -18,8 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "dma.h"
-#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -61,9 +59,9 @@ void SystemClock_Config(void);
 /* USER CODE END 0 */
 
 /**
- * @brief  The application entry point.
- * @retval int
- */
+  * @brief  The application entry point.
+  * @retval int
+  */
 int main(void)
 {
 
@@ -89,80 +87,31 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_TIM1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   HC595_Init();
-  HAL_UART_Receive_DMA(&huart1, (uint8_t *)UserCommon.uartReceive, UART_BUFFSIZE);
-  __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
-  HAL_UART_Receive_IT(&huart1, (uint8_t *)UserCommon.uartReceive, UART_BUFFSIZE);
-  HAL_TIM_Base_Start_IT(&htim1);
+//  HAL_UART_Receive_DMA(&huart1, (uint8_t *)UserCommon.uartReceive, UART_BUFFSIZE);
+//  __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
+//  HAL_UART_Receive_IT(&huart1, (uint8_t *)UserCommon.uartReceive, UART_BUFFSIZE);
+//  HAL_TIM_Base_Start_IT(&htim1);
   UserCommon.second = 0;
   UserCommon.minute = 0;
   UserCommon.hour = 0;
   UserCommon.flag.isUpdateTime = ON;
   //  HAL_GPIO_WritePin(USER_LED_GPIO_Port,USER_LED_Pin,GPIO_PIN_RESET);
   //  uint8_t flag = 1;
+
+  xTaskCreate(RunTime,      "Time_task",     1024, NULL, 3, NULL);
+  xTaskCreate(LedTask,      "led_task",      256, NULL, 3, NULL);
+  xTaskCreate(DisplayTime,  "Display_task",  256, NULL, 3, NULL);
+  vTaskStartScheduler();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    if (UserTim.bytes.systim_1ms == ON) // 1ms 循环
-    {
-      UserTim.bytes.systim_1ms = OFF;
-    }
 
-    if (UserTim.bytes.systim_5ms == ON) // 5ms 循环
-    {
-      UserTim.bytes.systim_5ms = OFF;
-    }
-
-    if (UserTim.bytes.systim_100ms == ON) // 100ms 循环
-    {
-      UserTim.bytes.systim_100ms = OFF;
-      if (UserCommon.flag.isUpdateTime == ON)
-      {
-        UserCommon.flag.isUpdateTime = OFF;
-        HC595_DisplayNumber(UserCommon.minute * 100 + UserCommon.second);
-      }
-    }
-
-    if (UserTim.bytes.systim_250ms == ON) // 250ms 循环
-    {
-      UserTim.bytes.systim_250ms = OFF;
-    }
-
-    if (UserTim.bytes.systim_500ms == ON) // 500ms 循环
-    {
-      UserTim.bytes.systim_500ms = OFF;
-      HAL_GPIO_TogglePin(USER_LED_GPIO_Port, USER_LED_Pin);
-    }
-
-    if (UserTim.bytes.systim_1000ms == ON) // 1s 循环
-    {
-      UserTim.bytes.systim_1000ms = OFF;
-      UserCommon.flag.isUpdateTime = ON;
-      UserCommon.second++;
-      if (UserCommon.second >= 60)
-      {
-        UserCommon.second = 0;
-        UserCommon.minute++;
-        if (UserCommon.minute >= 60)
-        {
-          UserCommon.minute = 0;
-          UserCommon.hour++;
-          if (UserCommon.hour >= 24)
-          {
-            UserCommon.hour = 0;
-          }
-        }
-      }
-
-      //		HC595_DisplayNumber(UserCommon.hour * 100 + UserCommon.minute);
-    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -171,17 +120,17 @@ int main(void)
 }
 
 /**
- * @brief System Clock Configuration
- * @retval None
- */
+  * @brief System Clock Configuration
+  * @retval None
+  */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Initializes the RCC Oscillators according to the specified parameters
-   * in the RCC_OscInitTypeDef structure.
-   */
+  * in the RCC_OscInitTypeDef structure.
+  */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
@@ -195,8 +144,9 @@ void SystemClock_Config(void)
   }
 
   /** Initializes the CPU, AHB and APB buses clocks
-   */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
@@ -213,9 +163,30 @@ void SystemClock_Config(void)
 /* USER CODE END 4 */
 
 /**
- * @brief  This function is executed in case of error occurrence.
- * @retval None
- */
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM4 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM4) {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
@@ -227,14 +198,14 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef USE_FULL_ASSERT
+#ifdef  USE_FULL_ASSERT
 /**
- * @brief  Reports the name of the source file and the source line number
- *         where the assert_param error has occurred.
- * @param  file: pointer to the source file name
- * @param  line: assert_param error line source number
- * @retval None
- */
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
