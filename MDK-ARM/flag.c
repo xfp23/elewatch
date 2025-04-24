@@ -144,11 +144,11 @@ void RunTime(void *p)
 {
     while(1)
     {
-	  UserCommon.flag.isUpdateTime = ON;
       UserCommon.second++;
       if (UserCommon.second >= 60)
       {
         UserCommon.second = 0;
+		UserCommon.flag.isUpdateTime = ON;
         UserCommon.minute++;
         if (UserCommon.minute >= 60)
         {
@@ -172,7 +172,7 @@ void DisplayTime(void *p)
       if (UserCommon.flag.isUpdateTime == ON)
       {
         UserCommon.flag.isUpdateTime = OFF;
-        HC595_DisplayNumber(UserCommon.minute * 100 + UserCommon.second);
+        HC595_DisplayNumber(UserCommon.hour * 100 + UserCommon.minute);
       }
     }
 }

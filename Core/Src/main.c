@@ -95,7 +95,7 @@ int main(void)
 //  HAL_UART_Receive_IT(&huart1, (uint8_t *)UserCommon.uartReceive, UART_BUFFSIZE);
 //  HAL_TIM_Base_Start_IT(&htim1);
   UserCommon.second = 0;
-  UserCommon.minute = 0;
+  UserCommon.minute = 2;
   UserCommon.hour = 0;
   UserCommon.flag.isUpdateTime = ON;
   //  HAL_GPIO_WritePin(USER_LED_GPIO_Port,USER_LED_Pin,GPIO_PIN_RESET);
