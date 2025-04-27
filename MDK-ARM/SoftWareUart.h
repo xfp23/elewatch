@@ -22,6 +22,13 @@ typedef enum
 
 } SoftWareUart_baud_t;
 
+typedef enum 
+{
+    UART_OK,
+    UART_ERROR,
+
+}SoftWareUart_Status_t;
+
 // 枚举类型标记当前位
 typedef enum
 {
@@ -51,8 +58,16 @@ typedef struct
 {
     SoftWareUart_baud_t baud; // 波特率
     SoftWareUart_HardWare_t HardWare;
+    uint8_t *rxbuffer;
+    size_t rx_size;
 } SoftWareUart_Conf_t;
 
+typedef struct
+{
+    uint8_t Recivedata :1;
+    uint8_t Firstdata :1;
+    uint8_t Reserve_bits :6;
+}SoftWare_flag_t;
 typedef union
 {
     struct
@@ -61,6 +76,12 @@ typedef union
         SoftWareUart_HardWare_t HardWare;
         SoftWare_Bit_t recvStat; // 当前位
         uint8_t recvData;
+        uint8_t *rxbuffer;
+        size_t rx_size;
+        volatile uint16_t rx_write_index;
+        volatile uint16_t rx_read_index;
+        SoftWare_flag_t flag;
+
     };
 } SoftWareUart_t;
 
@@ -72,7 +93,7 @@ typedef SoftWareUart_t *SoftWareUart_Handle_t;
  * @param handle 软件串口句柄
  * @param byte 要发送的字节
  */
-extern void SoftWareUart_Sendbyte(SoftWareUart_Handle_t handle, uint8_t byte);
+extern SoftWareUart_Status_t SoftWareUart_Sendbyte(SoftWareUart_Handle_t handle, uint8_t byte);
 
 /**
  * @brief 软件串口对外发送buffer
@@ -81,7 +102,7 @@ extern void SoftWareUart_Sendbyte(SoftWareUart_Handle_t handle, uint8_t byte);
  * @param buffer buffer地址
  * @param size buffer大小
  */
-extern void SoftWareUart_SendBuffer(SoftWareUart_Handle_t handle, const uint8_t *buffer, size_t size);
+extern SoftWareUart_Status_t SoftWareUart_SendBuffer(SoftWareUart_Handle_t handle, const uint8_t *buffer, size_t size);
 
 /**
  * @brief 软件串口初始化
@@ -89,7 +110,7 @@ extern void SoftWareUart_SendBuffer(SoftWareUart_Handle_t handle, const uint8_t 
  * @param handle 句柄
  * @param conf 配置信息
  */
-extern void SoftWareUART_Init(SoftWareUart_Handle_t *handle, SoftWareUart_Conf_t *conf);
+extern SoftWareUart_Status_t SoftWareUART_Init(SoftWareUart_Handle_t *handle, SoftWareUart_Conf_t *conf);
 
 /**
  * @brief 软件串口的外部中断回调

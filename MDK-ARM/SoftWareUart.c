@@ -33,10 +33,10 @@ static void SoftWareUart_delayus(SoftWareUart_Handle_t handle, volatile uint32_t
  * @param handle
  * @param byte
  */
-void SoftWareUart_Sendbyte(SoftWareUart_Handle_t handle, uint8_t byte)
+SoftWareUart_Status_t SoftWareUart_Sendbyte(SoftWareUart_Handle_t handle, uint8_t byte)
 {
     if (handle == NULL)
-        return;
+        return UART_ERROR;
     uint32_t i, tmp;
     // 开始位
     // iouart1_TXD(0); //将TXD的引脚的电平置低
@@ -62,6 +62,7 @@ void SoftWareUart_Sendbyte(SoftWareUart_Handle_t handle, uint8_t byte)
     // iouart1_TXD(1);//将TXD的引脚的电平置?
     HAL_GPIO_WritePin(handle->HardWare.TXport, handle->HardWare.TXpin, GPIO_PIN_SET);
     SoftWareUart_delayus(handle, handle->baud);
+    return UART_OK;
 }
 
 /**
@@ -71,14 +72,15 @@ void SoftWareUart_Sendbyte(SoftWareUart_Handle_t handle, uint8_t byte)
  * @param buffer
  * @param size
  */
-void SoftWareUart_SendBuffer(SoftWareUart_Handle_t handle, const uint8_t *buffer, size_t size)
+SoftWareUart_Status_t SoftWareUart_SendBuffer(SoftWareUart_Handle_t handle, const uint8_t *buffer, size_t size)
 {
     if (handle == NULL)
-        return;
+        return UART_ERROR;
     for (int i = 0; i < size; i++)
     {
         SoftWareUart_Sendbyte(handle, buffer[i]);
     }
+    return UART_OK;
 }
 /**
  * @brief
@@ -86,18 +88,20 @@ void SoftWareUart_SendBuffer(SoftWareUart_Handle_t handle, const uint8_t *buffer
  * @param handle
  * @param conf
  */
-void SoftWareUART_Init(SoftWareUart_Handle_t *handle, SoftWareUart_Conf_t *conf)
+SoftWareUart_Status_t SoftWareUART_Init(SoftWareUart_Handle_t *handle, SoftWareUart_Conf_t *conf)
 {
     if (handle == NULL || conf == NULL)
-        return;
+        return UART_ERROR;
 
     if (*handle != NULL)
-        return;
+        return UART_ERROR;
 
     *handle = (SoftWareUart_Handle_t)calloc(1, sizeof(SoftWareUart_t));
     if (*handle == NULL)
-        return;
+        return UART_ERROR;
     (*handle)->baud = conf->baud;
+    (*handle)->rxbuffer = conf->rxbuffer;
+    (*handle)->rx_size = conf->rx_size;
     (*handle)->HardWare.TXport = conf->HardWare.TXport;
     (*handle)->HardWare.RXport = conf->HardWare.RXport;
     (*handle)->HardWare.TXpin = conf->HardWare.TXpin;
@@ -107,6 +111,7 @@ void SoftWareUART_Init(SoftWareUart_Handle_t *handle, SoftWareUart_Conf_t *conf)
     (*handle)->recvData = 0;
     (*handle)->recvStat = COM_STOP_BIT;
     HAL_TIM_Base_Start((*handle)->HardWare.DelayHtime);
+    return UART_OK;
 }
 
 /**
@@ -137,6 +142,14 @@ void SoftWareUart_TimeCallback(SoftWareUart_Handle_t *handle)
     else
     {
         // 接收结束了（通常第9次是停止位，可以检查也可以直接结束）
+        if(uart->rxbuffer != NULL)
+        {
+            uart->rxbuffer[uart->rx_write_index++] = uart->recvData;
+            if (uart->rx_write_index >= uart->rx_size)
+            {
+                uart->rx_write_index = 0; // 循环
+            }
+        }
         HAL_TIM_Base_Stop_IT(uart->HardWare.InterruptHtime); // 停止计时器中断
         uart->recvStat = COM_STOP_BIT;                       // 重置状态，准备下一次接收
     }
@@ -155,7 +168,14 @@ void SoftWareUart_RXCallback(SoftWareUart_Handle_t *handle)
         {
             uart->recvStat = COM_START_BIT;                       // 标记开始采样
             uart->recvData = 0;                                   // 清空上次接收的数据
-            SoftWareUart_delayus(uart, uart->baud * 1.5);         // 1.5bit时间，跳到第一个数据位中间
+            if(!uart->flag.Firstdata)
+            {
+                uart->flag.Firstdata = 1;
+                SoftWareUart_delayus(uart,uart->baud * 1.5); 
+            } else {
+                SoftWareUart_delayus(uart,50);        					 // 跳过起始位等待
+            }
+
             HAL_TIM_Base_Start_IT(uart->HardWare.InterruptHtime); // 开启定时器中断，定时采样
         }
     }

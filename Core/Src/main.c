@@ -113,6 +113,8 @@ int main(void)
       .DelayHtime = &htim2,
       .InterruptHtime = &htim1,
     },
+    .rxbuffer = UserCommon.uartReceive,
+    .rx_size = UART_BUFFSIZE,
   };
   SoftWareUART_Init(&SoftUart,&conf); // 软件串口初始化
   xTaskCreate(RunTime,      "Time_task",     128, NULL, 3, NULL);
