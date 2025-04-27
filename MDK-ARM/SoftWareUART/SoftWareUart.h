@@ -3,6 +3,37 @@
 
 #pragma anon_unions
 
+/**
+ * @file SoftWareUart.h
+ * @author https://github.com/xfp23
+ * @brief 软件串口驱动库
+ *
+ * @note 使用本库前，请预先配置好两个定时器：
+ *
+ * 1. DelayHtime 定时器：
+ *    - 仅用于计数，本库不会启用其中断。
+ *    - 定时器频率必须配置为 1 MHz（即1微秒1计数）。
+ *    - 本库只需要读取其计数值，若无冲突，也可用于其他用途。
+ *
+ * 2. InterruptHtime 定时器：
+ *    - 必须启用中断功能。
+ *    - 定时器频率配置为 1 MHz。
+ *    - 定时器重装载值（ARR）需设置为本库对应波特率的枚举值。
+ *    - 在中断服务函数中调用本库提供的 API：`SoftWareUart_TimeCallback()`。
+ *
+ * 3. GPIO 配置要求：
+ *    - RX 引脚：配置为下降沿触发中断，GPIO 速率需设置为高速。在外部中断回调处调用本库API : `SoftWareUart_RXCallback()`。
+ *    - TX 引脚：配置为推挽输出，GPIO 速率同样需设置为高速。
+ * 
+ * 4. 波特率支持 : 
+ *  - 经调试，本库支持两个波特率的收发，分别是 9600 19200
+ *
+ * @version 0.1
+ * @date 2025-04-27
+ *
+ * @copyright Copyright (c) 2025
+ */
+
 #include "stdio.h"
 #include "main.h"
 #include "stdint.h"
@@ -16,11 +47,12 @@ extern "C"
 
 typedef enum
 {
+    //    BITS_4800 = 205,
     BITS_9600 = 104,
-    BITS_19200 = 58,
-    BITS_115200 = 9,
+    BITS_19200 = 50,
+    //    BITS_115200 = 8,
 
-} SoftWareUart_baud_t;
+} SoftWareUart_baud_t; // 支持的波特率
 
 typedef enum
 {
@@ -68,7 +100,6 @@ typedef struct
     uint8_t Firstdata : 1;
     uint8_t Reserve_bits : 6;
 } SoftWare_flag_t;
-
 
 typedef union
 {
