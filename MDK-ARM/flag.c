@@ -140,8 +140,14 @@ void UartTest(void *p)
 	while(1)
 	{
     uint8_t data[20] = {0};
+
+	if(SoftWareUart_CheckRevice(SoftUart) == UART_OK)
+	{
     sprintf(data,"%d :: %d :: %d",UserCommon.hour,UserCommon.minute,UserCommon.second);
     SoftWareUart_SendBuffer(SoftUart,data,strlen(data) +1);
+	 SoftWareUart_Clearbuffer(&SoftUart);
+	}
+
 //		uint8_t data = 0x03;
 //		SoftWareUart_Sendbyte(SoftUart,data);
     vTaskDelay(1000);

@@ -53,13 +53,11 @@ SoftWareUart_Status_t SoftWareUart_Sendbyte(SoftWareUart_Handle_t handle, uint8_
         }
         else
         {
-            //   iouart1_TXD(1);
             HAL_GPIO_WritePin(handle->HardWare.TXport, handle->HardWare.TXpin, GPIO_PIN_SET);
             SoftWareUart_delayus(handle, handle->baud);
         }
     }
     // 结束位
-    // iouart1_TXD(1);//将TXD的引脚的电平置?
     HAL_GPIO_WritePin(handle->HardWare.TXport, handle->HardWare.TXpin, GPIO_PIN_SET);
     SoftWareUart_delayus(handle, handle->baud);
     return UART_OK;
@@ -149,6 +147,8 @@ void SoftWareUart_TimeCallback(SoftWareUart_Handle_t *handle)
             {
                 uart->rx_write_index = 0; // 循环
             }
+			
+			(*handle)->flag.Recivedata = 1;
         }
         HAL_TIM_Base_Stop_IT(uart->HardWare.InterruptHtime); // 停止计时器中断
         uart->recvStat = COM_STOP_BIT;                       // 重置状态，准备下一次接收
@@ -179,4 +179,26 @@ void SoftWareUart_RXCallback(SoftWareUart_Handle_t *handle)
             HAL_TIM_Base_Start_IT(uart->HardWare.InterruptHtime); // 开启定时器中断，定时采样
         }
     }
+}
+
+SoftWareUart_Status_t SoftWareUart_CheckRevice(SoftWareUart_Handle_t handle)
+{
+	if(handle == NULL) return UART_ERROR;
+	
+	if(handle->flag.Recivedata)
+	{
+	return UART_OK;
+	}
+	return UART_ERROR;
+}
+
+SoftWareUart_Status_t SoftWareUart_Clearbuffer(SoftWareUart_Handle_t *handle)
+{
+
+if(handle == NULL || *handle == NULL) return UART_ERROR;
+	(*handle)->flag.Recivedata = 0;
+	memset((*handle)->rxbuffer,0,(*handle)->rx_size);
+	(*handle)->recvData = 0x00;
+	(*handle)->rx_write_index = 0;
+	return UART_OK;
 }

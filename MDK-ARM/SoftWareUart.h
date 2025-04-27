@@ -22,12 +22,12 @@ typedef enum
 
 } SoftWareUart_baud_t;
 
-typedef enum 
+typedef enum
 {
     UART_OK,
     UART_ERROR,
 
-}SoftWareUart_Status_t;
+} SoftWareUart_Status_t;
 
 // 枚举类型标记当前位
 typedef enum
@@ -64,10 +64,12 @@ typedef struct
 
 typedef struct
 {
-    uint8_t Recivedata :1;
-    uint8_t Firstdata :1;
-    uint8_t Reserve_bits :6;
-}SoftWare_flag_t;
+    uint8_t Recivedata : 1;
+    uint8_t Firstdata : 1;
+    uint8_t Reserve_bits : 6;
+} SoftWare_flag_t;
+
+
 typedef union
 {
     struct
@@ -79,9 +81,8 @@ typedef union
         uint8_t *rxbuffer;
         size_t rx_size;
         volatile uint16_t rx_write_index;
-        volatile uint16_t rx_read_index;
+        //        volatile uint16_t rx_read_index;
         SoftWare_flag_t flag;
-
     };
 } SoftWareUart_t;
 
@@ -120,11 +121,27 @@ extern SoftWareUart_Status_t SoftWareUART_Init(SoftWareUart_Handle_t *handle, So
 extern void SoftWareUart_RXCallback(SoftWareUart_Handle_t *handle);
 
 /**
- * @brief 软件巉口的定时器回调
+ * @brief 软件串口的定时器回调
  *
  * @param handle 将此函数放入配置信息中的 InterruptHtime 定时器回调触发中
  */
 extern void SoftWareUart_TimeCallback(SoftWareUart_Handle_t *handle);
+
+/**
+ * @brief 清除软件串口的buffer,在处理完接收buffer中的数据后可调用此API进行清除buffer
+ *
+ * @param handle
+ * @return SoftWareUart_Status_t
+ */
+extern SoftWareUart_Status_t SoftWareUart_Clearbuffer(SoftWareUart_Handle_t *handle);
+
+/**
+ * @brief 检查接收状态，在此函数返回UART_OK的时候处理接收buffer中的数据，检查频率不能太高
+ *
+ * @param handle 句柄
+ * @return SoftWareUart_Status_t 状态
+ */
+extern SoftWareUart_Status_t SoftWareUart_CheckRevice(SoftWareUart_Handle_t handle);
 
 #ifdef __cplusplus
 }
