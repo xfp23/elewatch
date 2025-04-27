@@ -4,6 +4,8 @@ volatile UserTim_t UserTim = {0}; // 定时器标志
 
 volatile UserCommon_t UserCommon = {0}; // 用户公共体
 
+SoftWareUart_Handle_t SoftUart = NULL;
+
 /*******************************************************************************
 Name            : void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 Syntax          : HAL_UART_RxCpltCallback(&huart1)
@@ -12,20 +14,20 @@ Return value    : -
 Description     :  stm32xx_it.c调用
 Date			: 2025/4/21
 |******************************************************************************/
-//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-//{
-//    if (huart->Instance == USART1)
-//    {
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if (huart->Instance == USART1)
+    {
 
-//        if (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_IDLE) != RESET)
-//        {
-//            __HAL_UART_CLEAR_IDLEFLAG(&huart1);
-//            HAL_UART_DMAStop(&huart1); // 停止dma接收
-//            UserCommon.flag.isUartReceive = ON;
-//            HAL_UART_Receive_DMA(&huart1, (uint8_t*)UserCommon.uartReceive, UART_BUFFSIZE); // 重开dma
-//        }
-//    }
-//}
+        if (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_IDLE) != RESET)
+        {
+            __HAL_UART_CLEAR_IDLEFLAG(&huart1);
+            HAL_UART_DMAStop(&huart1); // 停止dma接收
+            UserCommon.flag.isUartReceive = ON;
+            HAL_UART_Receive_DMA(&huart1, (uint8_t*)UserCommon.uartReceive, UART_BUFFSIZE); // 重开dma
+        }
+    }
+}
 
 
 /*******************************************************************************
@@ -36,23 +38,23 @@ Return value    : -
 Description     :  不需要调用此函数
 Date			: 2025/4/21
 |******************************************************************************/
-//int fputc(int ch, FILE *f)
-//{
-//    static uint16_t delayUtil = 0;
+int fputc(int ch, FILE *f)
+{
+    static uint16_t delayUtil = 0;
 
-//    HAL_UART_Transmit(&huart1, (unsigned char *)&ch, 1, 0xFFFF);
+    HAL_UART_Transmit(&huart1, (unsigned char *)&ch, 1, 0xFFFF);
 
-//    while (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_TC) != SET)
-//    {
-//        if (++delayUtil > 2000)
-//        {
-//            delayUtil = 0;
-//            break;
-//        }
-//    };
+    while (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_TC) != SET)
+    {
+        if (++delayUtil > 2000)
+        {
+            delayUtil = 0;
+            break;
+        }
+    };
 
-//    return ch;
-//}
+    return ch;
+}
 
 /*******************************************************************************
 Name            : HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
@@ -64,64 +66,10 @@ Date			: 2025/4/21
 |******************************************************************************/
 //void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 //{
-//    static uint8_t sys1ms_count = 0;
-//    static uint8_t sys5ms_count = 0;
-//    static uint8_t sys100ms_count = 0;
-//    static uint8_t sys250ms_count = 0;
-//    static uint16_t sys500ms_count = 0;
-//    static uint16_t sys1000ms_count = 0;
-//    if (htim->Instance == TIM1)
-//    {
-
-//        if (++sys1ms_count >= 1)
-//        {
-//            sys1ms_count = 0;
-//            UserTim.bytes.systim_1ms = ON;
-//        }
-//        if (++sys5ms_count >= 5)
-//        {
-//            sys5ms_count = 0;
-//            UserTim.bytes.systim_5ms = ON;
-//        }
-
-//        if (++sys100ms_count >= 100)
-//        {
-//            sys100ms_count = 0;
-//            UserTim.bytes.systim_100ms = ON;
-//        }
-//        if (++sys250ms_count >= 250)
-//        {
-//            sys250ms_count = 0;
-//            UserTim.bytes.systim_250ms = ON;
-//        }
-//        if (++sys500ms_count >= 500)
-//        {
-//            sys500ms_count = 0;
-//            UserTim.bytes.systim_500ms = ON;
-//        }
-
-//        if (++sys1000ms_count >= 1000)
-//        {
-//            UserTim.bytes.systim_1000ms = ON;
-//			sys1000ms_count = 0;
-////			UserCommon.flag.isUpdateTime = ON;
-////		if(++UserCommon.second >= 60)
-////		{
-////			UserCommon.second = 0;
-//////			UserCommon.flag.isUpdateTime = ON;
-////		if(++UserCommon.minute >= 60)
-////		{
-////			UserCommon.minute = 0;
-////			
-////		if(++UserCommon.hour >= 24)
-////		{
-////			UserCommon.hour = 0;
-////		}
-////		}
-////		}
-
-//        }
-//    }
+//	if (htim->Instance == TIM1)
+//  {
+//    SoftWareUart_TimeCallback(&SoftUart);
+//  }
 //}
 
 /*******************************************************************************
@@ -187,3 +135,15 @@ void LedTask(void *p)
     }
 }
 
+void UartTest(void *p)
+{
+	while(1)
+	{
+    uint8_t data[20] = {0};
+    sprintf(data,"%d :: %d :: %d",UserCommon.hour,UserCommon.minute,UserCommon.second);
+    SoftWareUart_SendBuffer(SoftUart,data,strlen(data) +1);
+//		uint8_t data = 0x03;
+//		SoftWareUart_Sendbyte(SoftUart,data);
+    vTaskDelay(1000);
+	}
+}

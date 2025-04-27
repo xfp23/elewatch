@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -88,6 +89,8 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART1_UART_Init();
+  MX_TIM1_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HC595_Init();
 //  HAL_UART_Receive_DMA(&huart1, (uint8_t *)UserCommon.uartReceive, UART_BUFFSIZE);
@@ -95,15 +98,27 @@ int main(void)
 //  HAL_UART_Receive_IT(&huart1, (uint8_t *)UserCommon.uartReceive, UART_BUFFSIZE);
 //  HAL_TIM_Base_Start_IT(&htim1);
   UserCommon.second = 0;
-  UserCommon.minute = 2;
-  UserCommon.hour = 0;
+  UserCommon.minute = 51;
+  UserCommon.hour = 12;
   UserCommon.flag.isUpdateTime = ON;
   //  HAL_GPIO_WritePin(USER_LED_GPIO_Port,USER_LED_Pin,GPIO_PIN_RESET);
   //  uint8_t flag = 1;
-
-  xTaskCreate(RunTime,      "Time_task",     1024, NULL, 3, NULL);
-  xTaskCreate(LedTask,      "led_task",      256, NULL, 3, NULL);
-  xTaskCreate(DisplayTime,  "Display_task",  256, NULL, 3, NULL);
+  SoftWareUart_Conf_t conf = {
+    .baud = BITS_9600,
+    .HardWare = {
+      .TXport = GPIOB,
+      .TXpin = GPIO_PIN_12,
+      .RXport = GPIOB,
+      .RXpin = GPIO_PIN_13,
+      .DelayHtime = &htim2,
+      .InterruptHtime = &htim1,
+    },
+  };
+  SoftWareUART_Init(&SoftUart,&conf); // 软件串口初始化
+  xTaskCreate(RunTime,      "Time_task",     128, NULL, 3, NULL);
+  xTaskCreate(LedTask,      "led_task",      128, NULL, 3, NULL);
+  xTaskCreate(DisplayTime,  "Display_task",  128, NULL, 3, NULL);
+  xTaskCreate(UartTest,      "SoftWare_task", 512,NULL,3 ,NULL);
   vTaskStartScheduler();
   /* USER CODE END 2 */
 
@@ -179,7 +194,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
-
+  if (htim->Instance == TIM1)
+  {
+    SoftWareUart_TimeCallback(&SoftUart);
+  }
   /* USER CODE END Callback 1 */
 }
 
