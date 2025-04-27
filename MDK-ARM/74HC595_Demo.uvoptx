@@ -351,7 +351,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\SoftWareUART\SoftWareUart.c</PathWithFileName>
+      <PathWithFileName>..\SoftWareUART\SoftWareUart.c</PathWithFileName>
       <FilenameWithoutPath>SoftWareUart.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>

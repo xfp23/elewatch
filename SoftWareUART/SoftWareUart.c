@@ -1,11 +1,5 @@
 #include "SoftWareUart.h"
 
-/**
- * @brief
- *
- * @param handle
- * @param nTime
- */
 static void SoftWareUart_delayus(SoftWareUart_Handle_t handle, volatile uint32_t nTime)
 {
     if (handle == NULL)
@@ -27,12 +21,6 @@ static void SoftWareUart_delayus(SoftWareUart_Handle_t handle, volatile uint32_t
     }
 }
 
-/**
- * @brief
- *
- * @param handle
- * @param byte
- */
 SoftWareUart_Status_t SoftWareUart_Sendbyte(SoftWareUart_Handle_t handle, uint8_t byte)
 {
     if (handle == NULL)
@@ -73,12 +61,7 @@ SoftWareUart_Status_t SoftWareUart_SendBuffer(SoftWareUart_Handle_t handle, cons
     }
     return UART_OK;
 }
-/**
- * @brief
- *
- * @param handle
- * @param conf
- */
+
 SoftWareUart_Status_t SoftWareUART_Init(SoftWareUart_Handle_t *handle, SoftWareUart_Conf_t *conf)
 {
     if (handle == NULL || conf == NULL)
@@ -105,11 +88,6 @@ SoftWareUart_Status_t SoftWareUART_Init(SoftWareUart_Handle_t *handle, SoftWareU
     return UART_OK;
 }
 
-/**
- * @brief
- *
- * @param handle
- */
 void SoftWareUart_TimeCallback(SoftWareUart_Handle_t *handle)
 {
     if (handle == NULL || *handle == NULL)
