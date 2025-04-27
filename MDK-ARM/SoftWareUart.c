@@ -173,7 +173,7 @@ void SoftWareUart_RXCallback(SoftWareUart_Handle_t *handle)
                 uart->flag.Firstdata = 1;
                 SoftWareUart_delayus(uart,uart->baud * 1.5); 
             } else {
-                SoftWareUart_delayus(uart,50);        					 // 跳过起始位等待
+                SoftWareUart_delayus(uart,uart->baud / 2);        					 // 跳过起始位等待
             }
 
             HAL_TIM_Base_Start_IT(uart->HardWare.InterruptHtime); // 开启定时器中断，定时采样
