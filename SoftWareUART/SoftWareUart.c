@@ -1,6 +1,6 @@
-#include "SoftWareUart.h"
+#include "SoftwareUART.h"
 
-static void SoftWareUart_delayus(SoftWareUart_Handle_t handle, volatile uint32_t nTime)
+static void SoftwareUART_delayus(SoftwareUART_Handle_t handle, volatile uint32_t nTime)
 {
     if (handle == NULL)
         return;
@@ -21,7 +21,7 @@ static void SoftWareUart_delayus(SoftWareUart_Handle_t handle, volatile uint32_t
     }
 }
 
-SoftWareUart_Status_t SoftWareUart_Sendbyte(SoftWareUart_Handle_t handle, uint8_t byte)
+SoftwareUART_Status_t SoftwareUART_Sendbyte(SoftwareUART_Handle_t handle, uint8_t byte)
 {
     if (handle == NULL)
         return UART_ERROR;
@@ -30,39 +30,39 @@ SoftWareUart_Status_t SoftWareUart_Sendbyte(SoftWareUart_Handle_t handle, uint8_
     // iouart1_TXD(0); //将TXD的引脚的电平置低
     HAL_GPIO_WritePin(handle->HardWare.TXport, handle->HardWare.TXpin, GPIO_PIN_RESET);
 
-    SoftWareUart_delayus(handle, handle->baud);
+    SoftwareUART_delayus(handle, handle->baud);
     for (i = 0; i < 8; i++)
     {
         tmp = (byte >> i) & 0x01;
         if (tmp == 0)
         {
             HAL_GPIO_WritePin(handle->HardWare.TXport, handle->HardWare.TXpin, GPIO_PIN_RESET);
-            SoftWareUart_delayus(handle, handle->baud);
+            SoftwareUART_delayus(handle, handle->baud);
         }
         else
         {
             HAL_GPIO_WritePin(handle->HardWare.TXport, handle->HardWare.TXpin, GPIO_PIN_SET);
-            SoftWareUart_delayus(handle, handle->baud);
+            SoftwareUART_delayus(handle, handle->baud);
         }
     }
     // 结束位
     HAL_GPIO_WritePin(handle->HardWare.TXport, handle->HardWare.TXpin, GPIO_PIN_SET);
-    SoftWareUart_delayus(handle, handle->baud);
+    SoftwareUART_delayus(handle, handle->baud);
     return UART_OK;
 }
 
-SoftWareUart_Status_t SoftWareUart_SendBuffer(SoftWareUart_Handle_t handle, const uint8_t *buffer, size_t size)
+SoftwareUART_Status_t SoftwareUART_SendBuffer(SoftwareUART_Handle_t handle, const uint8_t *buffer, size_t size)
 {
     if (handle == NULL)
         return UART_ERROR;
     for (int i = 0; i < size; i++)
     {
-        SoftWareUart_Sendbyte(handle, buffer[i]);
+        SoftwareUART_Sendbyte(handle, buffer[i]);
     }
     return UART_OK;
 }
 
-SoftWareUart_Status_t SoftWareUART_Init(SoftWareUart_Handle_t *handle, SoftWareUart_Conf_t *conf)
+SoftwareUART_Status_t SoftwareUART_Init(SoftwareUART_Handle_t *handle, SoftwareUART_Conf_t *conf)
 {
     if (handle == NULL || conf == NULL)
         return UART_ERROR;
@@ -70,7 +70,7 @@ SoftWareUart_Status_t SoftWareUART_Init(SoftWareUart_Handle_t *handle, SoftWareU
     if (*handle != NULL)
         return UART_ERROR;
 
-    *handle = (SoftWareUart_Handle_t)calloc(1, sizeof(SoftWareUart_t));
+    *handle = (SoftwareUART_Handle_t)calloc(1, sizeof(SoftwareUART_t));
     if (*handle == NULL)
         return UART_ERROR;
     (*handle)->baud = conf->baud;
@@ -88,12 +88,12 @@ SoftWareUart_Status_t SoftWareUART_Init(SoftWareUart_Handle_t *handle, SoftWareU
     return UART_OK;
 }
 
-void SoftWareUart_TimeCallback(SoftWareUart_Handle_t *handle)
+void SoftwareUART_TimeCallback(SoftwareUART_Handle_t *handle)
 {
     if (handle == NULL || *handle == NULL)
         return;
 
-    SoftWareUart_Handle_t uart = *handle;
+    SoftwareUART_Handle_t uart = *handle;
 
     uart->recvStat++; // recvStat 作为采样第几位计数器
 
@@ -126,12 +126,12 @@ void SoftWareUart_TimeCallback(SoftWareUart_Handle_t *handle)
     }
 }
 
-void SoftWareUart_RXCallback(SoftWareUart_Handle_t *handle)
+void SoftwareUART_RXCallback(SoftwareUART_Handle_t *handle)
 {
     if (handle == NULL || *handle == NULL)
         return;
 
-    SoftWareUart_Handle_t uart = *handle;
+    SoftwareUART_Handle_t uart = *handle;
 
     if (HAL_GPIO_ReadPin(uart->HardWare.RXport, uart->HardWare.RXpin) == 0)
     {
@@ -142,11 +142,11 @@ void SoftWareUart_RXCallback(SoftWareUart_Handle_t *handle)
             if (!uart->flag.Firstdata)
             {
                 uart->flag.Firstdata = 1;
-                SoftWareUart_delayus(uart, uart->baud * 1.5);
+                SoftwareUART_delayus(uart, uart->baud * 1.5);
             }
             else
             {
-                SoftWareUart_delayus(uart, (int)(uart->baud / 2)); // 跳过起始位等待
+                SoftwareUART_delayus(uart, (int)(uart->baud / 2)); // 跳过起始位等待
             }
 
             HAL_TIM_Base_Start_IT(uart->HardWare.InterruptHtime); // 开启定时器中断，定时采样
@@ -154,7 +154,7 @@ void SoftWareUart_RXCallback(SoftWareUart_Handle_t *handle)
     }
 }
 
-SoftWareUart_Status_t SoftWareUart_CheckRevice(SoftWareUart_Handle_t handle)
+SoftwareUART_Status_t SoftwareUART_CheckRevice(SoftwareUART_Handle_t handle)
 {
     if (handle == NULL)
         return UART_ERROR;
@@ -166,7 +166,7 @@ SoftWareUart_Status_t SoftWareUart_CheckRevice(SoftWareUart_Handle_t handle)
     return UART_ERROR;
 }
 
-SoftWareUart_Status_t SoftWareUart_Clearbuffer(SoftWareUart_Handle_t *handle)
+SoftwareUART_Status_t SoftwareUART_Clearbuffer(SoftwareUART_Handle_t *handle)
 {
 
     if (handle == NULL || *handle == NULL)

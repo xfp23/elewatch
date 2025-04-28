@@ -10,7 +10,7 @@
 #include "stdlib.h"
 #include "math.h"
 #include "usart.h"
-#include "SoftWareUart.h"
+#include "SoftwareUART.h"
 //#include "Logic.h"
 //#include "cJSON.h"
 #include "stdint.h"
@@ -72,7 +72,7 @@ typedef union
 
 extern volatile UserTim_t UserTim;       // 系统定时器
 extern volatile UserCommon_t UserCommon; // 用户公共体
-extern SoftWareUart_Handle_t SoftUart;
+extern SoftwareUART_Handle_t SoftUart;
 
 extern void Set_PWM_DutyCycle(float duty);
 //extern void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);

@@ -103,7 +103,7 @@ int main(void)
   UserCommon.flag.isUpdateTime = ON;
   //  HAL_GPIO_WritePin(USER_LED_GPIO_Port,USER_LED_Pin,GPIO_PIN_RESET);
   //  uint8_t flag = 1;
-  SoftWareUart_Conf_t conf = {
+  SoftwareUART_Conf_t conf = {
     .baud = BITS_9600,
     .HardWare = {
       .TXport = GPIOB,
@@ -116,7 +116,7 @@ int main(void)
     .rxbuffer = UserCommon.uartReceive,
     .rx_size = UART_BUFFSIZE,
   };
-  SoftWareUART_Init(&SoftUart,&conf); // 软件串口初始化
+  SoftwareUART_Init(&SoftUart,&conf); // 软件串口初始化
   xTaskCreate(RunTime,      "Time_task",     128, NULL, 3, NULL);
   xTaskCreate(LedTask,      "led_task",      128, NULL, 3, NULL);
   xTaskCreate(DisplayTime,  "Display_task",  128, NULL, 3, NULL);
@@ -198,7 +198,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 1 */
   if (htim->Instance == TIM1)
   {
-    SoftWareUart_TimeCallback(&SoftUart);
+    SoftwareUART_TimeCallback(&SoftUart);
   }
   /* USER CODE END Callback 1 */
 }

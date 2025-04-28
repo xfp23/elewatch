@@ -4,7 +4,7 @@ volatile UserTim_t UserTim = {0}; // 定时器标志
 
 volatile UserCommon_t UserCommon = {0}; // 用户公共体
 
-SoftWareUart_Handle_t SoftUart = NULL;
+SoftwareUART_Handle_t SoftUart = NULL;
 
 /*******************************************************************************
 Name            : void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
@@ -68,7 +68,7 @@ Date			: 2025/4/21
 //{
 //	if (htim->Instance == TIM1)
 //  {
-//    SoftWareUart_TimeCallback(&SoftUart);
+//    SoftwareUART_TimeCallback(&SoftUart);
 //  }
 //}
 
@@ -141,15 +141,15 @@ void UartTest(void *p)
 	{
     uint8_t data[20] = {0};
 
-	if(SoftWareUart_CheckRevice(SoftUart) == UART_OK)
+	if(SoftwareUART_CheckRevice(SoftUart) == UART_OK)
 	{
     sprintf(data,"%d :: %d :: %d",UserCommon.hour,UserCommon.minute,UserCommon.second);
-    SoftWareUart_SendBuffer(SoftUart,data,strlen(data) +1);
-	 SoftWareUart_Clearbuffer(&SoftUart);
+    SoftwareUART_SendBuffer(SoftUart,data,strlen(data) +1);
+	 SoftwareUART_Clearbuffer(&SoftUart);
 	}
 
 //		uint8_t data = 0x03;
-//		SoftWareUart_Sendbyte(SoftUart,data);
+//		SoftwareUART_Sendbyte(SoftUart,data);
     vTaskDelay(1000);
 	}
 }

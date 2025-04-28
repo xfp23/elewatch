@@ -239,7 +239,7 @@ void EXTI15_10_IRQHandler(void)
   /* USER CODE BEGIN EXTI15_10_IRQn 0 */
 	if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_13) != RESET)
 	{
-	 SoftWareUart_RXCallback(&SoftUart);
+	 SoftwareUART_RXCallback(&SoftUart);
 	}
 
   /* USER CODE END EXTI15_10_IRQn 0 */

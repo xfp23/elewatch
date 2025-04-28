@@ -1,24 +1,24 @@
 
 ---
 
-# 📚 SoftWareUart 软件串口驱动库 API 文档
+# 📚 SoftwareUART 软件串口驱动库 API 文档
 
 ---
 
 ## 简介
-SoftWareUart 是基于 STM32 HAL库的一个软件实现的 UART 驱动库，适用于没有硬件串口或者串口资源受限的场景。  
+SoftwareUART 是基于 STM32 HAL库的一个软件实现的 UART 驱动库，适用于没有硬件串口或者串口资源受限的场景。  
 需要预配置两个定时器以及相关 GPIO，支持基本的单字节、缓冲区收发与状态检测。
 
 ---
 
 ## 初始化配置
 
-### `SoftWareUART_Init()`
+### `SoftwareUART_Init()`
 > 软件串口初始化
 
 - **函数原型：**
   ```c
-  SoftWareUart_Status_t SoftWareUART_Init(SoftWareUart_Handle_t *handle, SoftWareUart_Conf_t *conf);
+  SoftwareUART_Status_t SoftwareUART_Init(SoftwareUART_Handle_t *handle, SoftwareUART_Conf_t *conf);
   ```
 - **参数说明：**
   - `handle`：软件串口句柄指针
@@ -31,12 +31,12 @@ SoftWareUart 是基于 STM32 HAL库的一个软件实现的 UART 驱动库，适
 
 ## 数据发送
 
-### `SoftWareUart_Sendbyte()`
+### `SoftwareUART_Sendbyte()`
 > 发送单个字节
 
 - **函数原型：**
   ```c
-  SoftWareUart_Status_t SoftWareUart_Sendbyte(SoftWareUart_Handle_t handle, uint8_t byte);
+  SoftwareUART_Status_t SoftwareUART_Sendbyte(SoftwareUART_Handle_t handle, uint8_t byte);
   ```
 - **参数说明：**
   - `handle`：软件串口句柄
@@ -47,12 +47,12 @@ SoftWareUart 是基于 STM32 HAL库的一个软件实现的 UART 驱动库，适
 
 ---
 
-### `SoftWareUart_SendBuffer()`
+### `SoftwareUART_SendBuffer()`
 > 发送一段缓冲区数据
 
 - **函数原型：**
   ```c
-  SoftWareUart_Status_t SoftWareUart_SendBuffer(SoftWareUart_Handle_t handle, const uint8_t *buffer, size_t size);
+  SoftwareUART_Status_t SoftwareUART_SendBuffer(SoftwareUART_Handle_t handle, const uint8_t *buffer, size_t size);
   ```
 - **参数说明：**
   - `handle`：软件串口句柄
@@ -66,12 +66,12 @@ SoftWareUart 是基于 STM32 HAL库的一个软件实现的 UART 驱动库，适
 
 ## 接收相关
 
-### `SoftWareUart_RXCallback()`
+### `SoftwareUART_RXCallback()`
 > 外部中断回调（接收起始位触发）
 
 - **函数原型：**
   ```c
-  void SoftWareUart_RXCallback(SoftWareUart_Handle_t *handle);
+  void SoftwareUART_RXCallback(SoftwareUART_Handle_t *handle);
   ```
 - **使用说明：**
   - 需要在 RX 引脚的下降沿中断中调用。
@@ -79,12 +79,12 @@ SoftWareUart 是基于 STM32 HAL库的一个软件实现的 UART 驱动库，适
 
 ---
 
-### `SoftWareUart_TimeCallback()`
+### `SoftwareUART_TimeCallback()`
 > 定时器中断回调（接收后续数据位）
 
 - **函数原型：**
   ```c
-  void SoftWareUart_TimeCallback(SoftWareUart_Handle_t *handle);
+  void SoftwareUART_TimeCallback(SoftwareUART_Handle_t *handle);
   ```
 - **使用说明：**
   - 需要在主定时器（InterruptHtime）的中断服务函数中调用。
@@ -92,12 +92,12 @@ SoftWareUart 是基于 STM32 HAL库的一个软件实现的 UART 驱动库，适
 
 ---
 
-### `SoftWareUart_CheckRevice()`
+### `SoftwareUART_CheckRevice()`
 > 检查是否接收到完整的一帧数据
 
 - **函数原型：**
   ```c
-  SoftWareUart_Status_t SoftWareUart_CheckRevice(SoftWareUart_Handle_t handle);
+  SoftwareUART_Status_t SoftwareUART_CheckRevice(SoftwareUART_Handle_t handle);
   ```
 - **参数说明：**
   - `handle`：软件串口句柄
@@ -110,12 +110,12 @@ SoftWareUart 是基于 STM32 HAL库的一个软件实现的 UART 驱动库，适
 
 ---
 
-### `SoftWareUart_Clearbuffer()`
+### `SoftwareUART_Clearbuffer()`
 > 清空接收缓冲区
 
 - **函数原型：**
   ```c
-  SoftWareUart_Status_t SoftWareUart_Clearbuffer(SoftWareUart_Handle_t *handle);
+  SoftwareUART_Status_t SoftwareUART_Clearbuffer(SoftwareUART_Handle_t *handle);
   ```
 - **参数说明：**
   - `handle`：软件串口句柄
@@ -134,19 +134,19 @@ SoftWareUart 是基于 STM32 HAL库的一个软件实现的 UART 驱动库，适
 - 9600 bps
 - 19200 bps
 
-（通过配置定时器重装载值 ARR 实现，枚举值定义在 `SoftWareUart_baud_t`）
+（通过配置定时器重装载值 ARR 实现，枚举值定义在 `SoftwareUART_baud_t`）
 
 ---
 
 ## 主要数据结构
 
-- `SoftWareUart_Handle_t`  
+- `SoftwareUART_Handle_t`  
   软件串口操作句柄。
   
-- `SoftWareUart_Conf_t`  
+- `SoftwareUART_Conf_t`  
   初始化配置参数（包含波特率、定时器、GPIO引脚等）。
 
-- `SoftWareUart_Status_t`  
+- `SoftwareUART_Status_t`  
   返回状态枚举（`UART_OK`、`UART_ERROR`）。
 
 - `SoftWare_Bit_t`  
@@ -157,8 +157,8 @@ SoftWareUart 是基于 STM32 HAL库的一个软件实现的 UART 驱动库，适
 ## 使用流程示例
 
 ```c
-SoftWareUart_Handle_t huart;
-SoftWareUart_Conf_t conf = {
+SoftwareUART_Handle_t huart;
+SoftwareUART_Conf_t conf = {
     .baud = BITS_9600,
     .HardWare = {
         .TXport = GPIOA,
@@ -172,11 +172,11 @@ SoftWareUart_Conf_t conf = {
     .rx_size = sizeof(rx_buf),
 };
 
-SoftWareUART_Init(&huart, &conf);
+SoftwareUART_Init(&huart, &conf);
 
 // 外部中断和定时器回调中分别调用
-// SoftWareUart_RXCallback(&huart);
-// SoftWareUart_TimeCallback(&huart);
+// SoftwareUART_RXCallback(&huart);
+// SoftwareUART_TimeCallback(&huart);
 ```
 
 ---
