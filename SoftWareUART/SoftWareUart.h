@@ -133,7 +133,7 @@ extern SoftwareUART_Status_t SoftwareUART_Sendbyte(SoftwareUART_Handle_t handle,
  * @param buffer buffer地址
  * @param size buffer大小
  */
-extern SoftwareUART_Status_t SoftwareUART_SendBuffer(SoftwareUART_Handle_t handle, const uint8_t *buffer, size_t size);
+extern SoftwareUART_Status_t SoftwareUART_Transmit(SoftwareUART_Handle_t handle, const uint8_t *buffer, size_t size);
 
 /**
  * @brief 软件串口初始化

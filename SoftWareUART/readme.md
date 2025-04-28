@@ -47,12 +47,12 @@ SoftwareUART 是基于 STM32 HAL库的一个软件实现的 UART 驱动库，适
 
 ---
 
-### `SoftwareUART_SendBuffer()`
+### `SoftwareUART_Transmit()`
 > 发送一段缓冲区数据
 
 - **函数原型：**
   ```c
-  SoftwareUART_Status_t SoftwareUART_SendBuffer(SoftwareUART_Handle_t handle, const uint8_t *buffer, size_t size);
+  SoftwareUART_Status_t SoftwareUART_Transmit(SoftwareUART_Handle_t handle, const uint8_t *buffer, size_t size);
   ```
 - **参数说明：**
   - `handle`：软件串口句柄

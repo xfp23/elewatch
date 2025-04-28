@@ -144,7 +144,7 @@ void UartTest(void *p)
 	if(SoftwareUART_CheckRevice(SoftUart) == UART_OK)
 	{
     sprintf(data,"%d :: %d :: %d",UserCommon.hour,UserCommon.minute,UserCommon.second);
-    SoftwareUART_SendBuffer(SoftUart,data,strlen(data) +1);
+    SoftwareUART_Transmit(SoftUart,data,strlen(data) +1);
 	 SoftwareUART_Clearbuffer(&SoftUart);
 	}
 

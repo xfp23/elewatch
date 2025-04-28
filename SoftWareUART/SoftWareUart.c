@@ -51,7 +51,7 @@ SoftwareUART_Status_t SoftwareUART_Sendbyte(SoftwareUART_Handle_t handle, uint8_
     return UART_OK;
 }
 
-SoftwareUART_Status_t SoftwareUART_SendBuffer(SoftwareUART_Handle_t handle, const uint8_t *buffer, size_t size)
+SoftwareUART_Status_t SoftwareUART_Transmit(SoftwareUART_Handle_t handle, const uint8_t *buffer, size_t size)
 {
     if (handle == NULL)
         return UART_ERROR;
