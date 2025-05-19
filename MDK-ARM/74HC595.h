@@ -6,6 +6,8 @@
 //#define HC595_OENUM 1 // OE 1 为单片 0 为多片 
 // 用户根据接线修改这些宏定义
 
+
+
 // 串行数据输入，接 MCU
 #define __74CH595_SER_GPIO_Port     GPIOB
 #define __74CH595_SER_Pin           GPIO_PIN_5

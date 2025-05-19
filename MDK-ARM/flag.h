@@ -8,6 +8,7 @@
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
+#include "Logic.h"
 #include "math.h"
 #include "usart.h"
 #include "SoftwareUART.h"
@@ -18,6 +19,7 @@
 #include "FreeRTOSConfig.h" 
 #include "FreeRTOS.h" 
 #include "task.h"
+#include "W25Q32.h"
 
 #ifdef __cplusplus
 extern "C"
