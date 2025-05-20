@@ -387,8 +387,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\W25Qxx\W25Q32.c</PathWithFileName>
-      <FilenameWithoutPath>W25Q32.c</FilenameWithoutPath>
+      <PathWithFileName>..\Buzzer\buzzer.c</PathWithFileName>
+      <FilenameWithoutPath>buzzer.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -399,8 +399,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Buzzer\buzzer.c</PathWithFileName>
-      <FilenameWithoutPath>buzzer.c</FilenameWithoutPath>
+      <PathWithFileName>..\W25Q32\W25Q32.c</PathWithFileName>
+      <FilenameWithoutPath>W25Q32.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
