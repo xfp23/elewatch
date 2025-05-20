@@ -82,10 +82,10 @@ typedef struct
 {
     Buzzer_Type_t type; // 蜂鸣器类型
     Buzzer_HardWare_t Hardware;
-    Buzzer_Flag_t flag; // 标志
-    unsigned int dur;   // duration，单次响声持续时间（单位：ms）
-    unsigned int rpt;   // repeat，响的次数
-    unsigned int beep_1ms_count;
+    volatile Buzzer_Flag_t flag; // 标志
+    volatile unsigned int dur;   // duration，单次响声持续时间（单位：ms）
+    volatile unsigned int rpt;   // repeat，响的次数
+    volatile unsigned int beep_1ms_count;
 
 } Buzzer_Obj;
 

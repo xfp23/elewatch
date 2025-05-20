@@ -48,7 +48,7 @@ Buzzer_Status_t Buzzer_StartBeep(Buzzer_Handle_t *handle, uint32_t dur, uint32_t
 
 * `dur`: 每次鸣叫持续时间（ms）
 * `rpt`: 鸣叫次数
-* `value`: 占空比（仅无源，0–100）
+* `value`: 占空比（仅无源，0–100）保持默认或有源蜂鸣器传入 `-1`
 
 ---
 
