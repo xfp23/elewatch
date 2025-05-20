@@ -70,7 +70,7 @@ Date			: 2025/4/21
 //{
 //	if (htim->Instance == TIM1)
 //  {
-//    SoftwareUART_TimeCallback(&SoftUart);
+//    SoftwareUART_TickHandler(&SoftUart);
 //  }
 //}
 

@@ -88,7 +88,7 @@ SoftwareUART_Status_t SoftwareUART_Init(SoftwareUART_Handle_t *handle, SoftwareU
     return UART_OK;
 }
 
-void SoftwareUART_TimeCallback(SoftwareUART_Handle_t *handle)
+void SoftwareUART_TickHandler(SoftwareUART_Handle_t *handle)
 {
     if (handle == NULL || *handle == NULL)
         return;

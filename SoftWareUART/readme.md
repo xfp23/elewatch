@@ -79,12 +79,12 @@ SoftwareUART 是基于 STM32 HAL库的一个软件实现的 UART 驱动库，适
 
 ---
 
-### `SoftwareUART_TimeCallback()`
+### `SoftwareUART_TickHandler()`
 > 定时器中断回调（接收后续数据位）
 
 - **函数原型：**
   ```c
-  void SoftwareUART_TimeCallback(SoftwareUART_Handle_t *handle);
+  void SoftwareUART_TickHandler(SoftwareUART_Handle_t *handle);
   ```
 - **使用说明：**
   - 需要在主定时器（InterruptHtime）的中断服务函数中调用。
@@ -176,7 +176,7 @@ SoftwareUART_Init(&huart, &conf);
 
 // 外部中断和定时器回调中分别调用
 // SoftwareUART_RXCallback(&huart);
-// SoftwareUART_TimeCallback(&huart);
+// SoftwareUART_TickHandler(&huart);
 ```
 
 ---

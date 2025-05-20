@@ -19,7 +19,7 @@
  *    - 必须启用中断功能。
  *    - 定时器频率配置为 1 MHz。
  *    - 定时器重装载值（ARR）需设置为本库对应波特率的枚举值。
- *    - 在中断服务函数中调用本库提供的 API：`SoftwareUART_TimeCallback()`。
+ *    - 在中断服务函数中调用本库提供的 API：`SoftwareUART_TickHandler()`。
  *
  * 3. GPIO 配置要求：
  *    - RX 引脚：配置为下降沿触发中断，GPIO 速率需设置为高速。在外部中断回调处调用本库API : `SoftwareUART_RXCallback()`。
@@ -155,7 +155,7 @@ extern void SoftwareUART_RXCallback(SoftwareUART_Handle_t *handle);
  *
  * @param handle 将此函数放入配置信息中的 InterruptHtime 定时器回调触发中
  */
-extern void SoftwareUART_TimeCallback(SoftwareUART_Handle_t *handle);
+extern void SoftwareUART_TickHandler(SoftwareUART_Handle_t *handle);
 
 /**
  * @brief 清除软件串口的buffer,在处理完接收buffer中的数据后可调用此API进行清除buffer
