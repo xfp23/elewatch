@@ -99,6 +99,7 @@ int main(void)
 //  __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
 //  HAL_UART_Receive_IT(&huart1, (uint8_t *)UserCommon.uartReceive, UART_BUFFSIZE);
 //  HAL_TIM_Base_Start_IT(&htim1);
+    HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
   UserCommon.second = 0;
   UserCommon.minute = 51;
   UserCommon.hour = 12;
