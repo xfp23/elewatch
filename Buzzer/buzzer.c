@@ -50,21 +50,20 @@ Buzzer_Status_t Buzzer_TickHandler(Buzzer_Handle_t *handle)
     switch ((*handle)->type)
     {
     case BUZZER_PASSIVE:
-        // 无源蜂鸣器
         if ((*handle)->flag.EN == BUZZER_OFF)
         {
             HAL_TIM_PWM_Stop((*handle)->Hardware.tim, (*handle)->Hardware.channel);
             return BUZZER_OK;
         }
 
-        if ((*handle)->rpt > 0) // 总次数
+        if ((*handle)->rpt > 0)
         {
             if ((*handle)->flag.BEEP == BUZZER_ON)
             {
                 (*handle)->flag.BEEP = BUZZER_OFF;
                 HAL_TIM_PWM_Stop((*handle)->Hardware.tim, (*handle)->Hardware.channel);
             }
-            if ((*handle)->beep_1ms_count == 0) // 走时间
+            if ((*handle)->beep_1ms_count == 0)
             {
                 (*handle)->flag.CNT_INT = BUZZER_ON;
                 HAL_TIM_PWM_Start((*handle)->Hardware.tim, (*handle)->Hardware.channel);
@@ -83,21 +82,20 @@ Buzzer_Status_t Buzzer_TickHandler(Buzzer_Handle_t *handle)
         }
         break;
     case BUZZER_ACTIVE:
-        // 有源蜂鸣器
         if ((*handle)->flag.EN == BUZZER_OFF)
         {
             HAL_GPIO_WritePin((*handle)->Hardware.beep.port, (*handle)->Hardware.beep.pin, GPIO_PIN_RESET);
             return BUZZER_OK;
         }
 
-        if ((*handle)->rpt > 0) // 总次数
+        if ((*handle)->rpt > 0)
         {
             if ((*handle)->flag.BEEP == BUZZER_ON)
             {
                 (*handle)->flag.BEEP = BUZZER_OFF;
                 HAL_GPIO_WritePin((*handle)->Hardware.beep.port, (*handle)->Hardware.beep.pin, GPIO_PIN_SET);
             }
-            if ((*handle)->beep_1ms_count == 0) // 走时间
+            if ((*handle)->beep_1ms_count == 0)
             {
                 (*handle)->flag.CNT_INT = BUZZER_ON;
                 HAL_GPIO_WritePin((*handle)->Hardware.beep.port, (*handle)->Hardware.beep.pin, GPIO_PIN_RESET);

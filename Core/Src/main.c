@@ -93,6 +93,7 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM2_Init();
   MX_SPI1_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   HC595_Init();
 //  HAL_UART_Receive_DMA(&huart1, (uint8_t *)UserCommon.uartReceive, UART_BUFFSIZE);
@@ -125,6 +126,13 @@ int main(void)
   xTaskCreate(DisplayTime,  "Display_task",  128, NULL, 3, NULL);
   xTaskCreate(UartTest,      "SoftWare_task", 512,NULL,3 ,NULL);
   vTaskStartScheduler();
+  Buzzer_Conf_t beep_conf = {
+    .beep.port = BEEP_GPIO_Port,
+    .beep.pin = BEEP_Pin,
+    .type = BUZZER_ACTIVE,
+  };
+  Buzzer_Init(&beep,&beep_conf);
+  Buzzer_StartBeep(&beep,100,2,-1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -202,6 +210,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if (htim->Instance == TIM1)
   {
     SoftwareUART_TimeCallback(&SoftUart);
+  }
+  
+  if(htim->Instance == TIM3)
+  {
+	  Buzzer_TickHandler(&beep);
   }
   /* USER CODE END Callback 1 */
 }

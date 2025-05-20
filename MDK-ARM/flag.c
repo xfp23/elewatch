@@ -6,6 +6,8 @@ volatile UserCommon_t UserCommon = {0}; // 用户公共体
 
 SoftwareUART_Handle_t SoftUart = NULL;
 
+Buzzer_Handle_t beep = NULL;
+
 /*******************************************************************************
 Name            : void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 Syntax          : HAL_UART_RxCpltCallback(&huart1)

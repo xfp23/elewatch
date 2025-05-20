@@ -4,7 +4,7 @@
 #pragma anon_unions
 
 #include "main.h"
-//#include "tim.h"
+#include "tim.h"
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
@@ -12,8 +12,7 @@
 #include "math.h"
 #include "usart.h"
 #include "SoftwareUART.h"
-//#include "Logic.h"
-//#include "cJSON.h"
+#include "Logic.h"
 #include "stdint.h"
 #include "74HC595.h"
 #include "FreeRTOSConfig.h" 
@@ -76,6 +75,7 @@ typedef union
 extern volatile UserTim_t UserTim;       // 系统定时器
 extern volatile UserCommon_t UserCommon; // 用户公共体
 extern SoftwareUART_Handle_t SoftUart;
+extern Buzzer_Handle_t beep; // 蜂鸣器对象
 
 extern void Set_PWM_DutyCycle(float duty);
 //extern void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
