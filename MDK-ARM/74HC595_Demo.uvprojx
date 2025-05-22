@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xB</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;../MDK-ARM;../FreeRTOS/include;../FreeRTOS/portable;../FreeRTOS;../FreeRTOS/portable/MemMang;../FreeRTOS/portable/RVDS/ARM_CM3;../SoftwareUART;../Buzzer;../W25Q32</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;../MDK-ARM;../FreeRTOS/include;../FreeRTOS/portable;../FreeRTOS;../FreeRTOS/portable/MemMang;../FreeRTOS/portable/RVDS/ARM_CM3;../SoftwareUART;../Buzzer;..\W25Qxx</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -414,11 +414,6 @@
               <FileName>buzzer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Buzzer\buzzer.c</FilePath>
-            </File>
-            <File>
-              <FileName>W25Q32.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\W25Q32\W25Q32.c</FilePath>
             </File>
             <File>
               <FileName>main.c</FileName>
@@ -659,6 +654,11 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
+            </File>
+            <File>
+              <FileName>W25Qxx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\W25Qxx\W25Qxx.c</FilePath>
             </File>
           </Files>
         </Group>

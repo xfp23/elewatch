@@ -18,7 +18,7 @@
 #include "FreeRTOSConfig.h" 
 #include "FreeRTOS.h" 
 #include "task.h"
-#include "W25Q32.h"
+#include "W25Qxx.h"
 #include "buzzer.h"
 
 #ifdef __cplusplus
