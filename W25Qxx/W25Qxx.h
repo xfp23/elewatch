@@ -84,13 +84,23 @@ extern "C"
 // W25Qxx  ID  0XEF15
 // W25Q64  ID  0XEF16
 // W25Q128 ID  0XEF17
-#define W25Q80 0XEF13
-#define W25Q16 0XEF14
-#define W25Qxx 0XEF15
-#define W25Q64 0XEF16
-#define W25Q128 0XEF17
+// #define W25Q80 0XEF13
+// #define W25Q16 0XEF14
+// #define W25Qxx 0XEF15
+// #define W25Q64 0XEF16
+// #define W25Q128 0XEF17
 
-#define W25Qxx_CheckStatus(ret) \
+typedef enum
+{
+    W25QXX_IDUNKNOW,
+    W25Q80 = 0XEF13,
+    W25Q16 = 0XEF14,
+    W25Q32 = 0XEF15,
+    W25Q64 = 0XEF16,
+    W25Q128 = 0XEF17,
+} W25Qxx_ID_t;
+
+#define W25Qxx_ChECKERR(ret) \
 do                          \
 {                           \
     if (ret != W25Qxx_OK)   \
@@ -206,7 +216,10 @@ typedef struct
 {
     W25Qxx_HardWare_t HardWare; // 硬件
     W25Qxx_Flag_t flag;
+    W25Qxx_ID_t ID;
+    uint32_t capacity;
     int timeout;
+    uint8_t buffer[4096];
 } W25Qxx_Obj;
 
 typedef W25Qxx_Obj *W25Qxx_Handle_t; // 句柄
@@ -219,6 +232,93 @@ typedef W25Qxx_Obj *W25Qxx_Handle_t; // 句柄
  * @return W25Qxx_Status_t 状态
  */
 extern W25Qxx_Status_t W25Qxx_Init(W25Qxx_Handle_t *handle, W25Qxx_Conf_t *conf);
+
+/**
+ * @brief 
+ * 
+ * @param handle 
+ * @param buffer 
+ * @param addr 
+ * @param size 
+ * @return W25Qxx_Status_t 
+ */
+extern W25Qxx_Status_t W25Qxx_Write(W25Qxx_Handle_t *handle, uint8_t *buffer, uint32_t addr, size_t size);
+
+
+/**
+ * @brief 
+ * 
+ * @param handle 
+ * @param buffer 
+ * @return W25Qxx_Status_t 
+ */
+extern W25Qxx_Status_t W25Qxx_ReadID(W25Qxx_Handle_t *handle,W25Qxx_ID_t *buffer);
+
+/**
+ * @brief 
+ * 
+ * @param handle 
+ * @return W25Qxx_Status_t 
+ */
+extern W25Qxx_Status_t W25Qxx_WeekUP(W25Qxx_Handle_t *handle);
+
+/**
+ * @brief 
+ * 
+ * @param handle 
+ * @return W25Qxx_Status_t 
+ */
+extern W25Qxx_Status_t W25Qxx_Powerdown(W25Qxx_Handle_t *handle);
+
+
+/**
+ * @brief 
+ * 
+ * @param handle 
+ * @return W25Qxx_Status_t 
+ */
+extern W25Qxx_Status_t W25Qxx_EraseChip(W25Qxx_Handle_t *handle); 
+
+/**
+ * @brief 
+ * 
+ * @param handle 
+ * @param buffer 
+ * @return W25Qxx_Status_t 
+ */
+extern W25Qxx_Status_t W25Qxx_ReadCapcity(W25Qxx_Handle_t *handle,uint32_t *buffer);
+
+/**
+ * @brief 
+ * 
+ * @param handle 
+ * @param addr 
+ * @return W25Qxx_Status_t 
+ */
+extern W25Qxx_Status_t W25Qxx_EraseSector(W25Qxx_Handle_t *handle,uint32_t addr);
+
+/**
+ * @brief 
+ * 
+ * @param handle 
+ * @param buffer 
+ * @param addr 
+ * @param size 
+ * @return W25Qxx_Status_t 
+ */
+extern W25Qxx_Status_t W25QXX_WritePage(W25Qxx_Handle_t *handle, uint8_t *buffer,uint32_t addr, size_t size);
+
+
+/**
+ * @brief 
+ * 
+ * @param handle 
+ * @param buffer 
+ * @param addr 
+ * @param size 
+ * @return W25Qxx_Status_t 
+ */
+extern W25Qxx_Status_t W25QXX_WriteNoCheck(W25Qxx_Handle_t *handle, uint8_t *buffer, uint32_t addr, size_t size);
 
 #ifdef __cplusplus
 }
