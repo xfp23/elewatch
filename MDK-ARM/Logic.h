@@ -9,6 +9,7 @@ extern "C"
 
 /* USER CODE BEGIN */
 
+extern void Dealwith_Uartdata();
 /* USER CODE END */
 #ifdef __cplusplus
 }

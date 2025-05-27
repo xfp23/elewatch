@@ -18,6 +18,8 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "i2c.h"
+#include "rtc.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -94,16 +96,20 @@ int main(void)
   MX_TIM2_Init();
   MX_SPI1_Init();
   MX_TIM3_Init();
+  MX_I2C1_Init();
+  MX_RTC_Init();
   /* USER CODE BEGIN 2 */
   HC595_Init();
+    HAL_RTC_GetTime(&hrtc, &GetTime, RTC_FORMAT_BIN);//获取时间
+  HAL_RTC_GetDate(&hrtc, &GetData, RTC_FORMAT_BIN);//获取日期
 //  HAL_UART_Receive_DMA(&huart1, (uint8_t *)UserCommon.uartReceive, UART_BUFFSIZE);
-//  __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
-//  HAL_UART_Receive_IT(&huart1, (uint8_t *)UserCommon.uartReceive, UART_BUFFSIZE);
-//  HAL_TIM_Base_Start_IT(&htim1);
-    HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
-  UserCommon.second = 0;
-  UserCommon.minute = 51;
-  UserCommon.hour = 12;
+//__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
+ HAL_UART_Receive_IT(&huart1, &UserCommon.rx_byte, 1);
+//  HAL_TIM_Base_Start_IT(&htim3);
+//    HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
+  UserCommon.second = GetTime.Seconds;
+  UserCommon.minute = GetTime.Minutes;
+  UserCommon.hour = GetTime.Hours;
   UserCommon.flag.isUpdateTime = ON;
   //  HAL_GPIO_WritePin(USER_LED_GPIO_Port,USER_LED_Pin,GPIO_PIN_RESET);
   //  uint8_t flag = 1;
@@ -120,19 +126,22 @@ int main(void)
     .rxbuffer = UserCommon.uartReceive,
     .rx_size = UART_BUFFSIZE,
   };
+
   SoftwareUART_Init(&SoftUart,&conf); // 软件串口初始化
-  xTaskCreate(RunTime,      "Time_task",     128, NULL, 3, NULL);
-  xTaskCreate(LedTask,      "led_task",      128, NULL, 3, NULL);
-  xTaskCreate(DisplayTime,  "Display_task",  128, NULL, 3, NULL);
-  xTaskCreate(UartTest,      "SoftWare_task", 512,NULL,3 ,NULL);
-  vTaskStartScheduler();
-  Buzzer_Conf_t beep_conf = {
-    .beep.port = BEEP_GPIO_Port,
-    .beep.pin = BEEP_Pin,
+    Buzzer_Conf_t beep_conf = {
+    .beep.port = USER_LED_GPIO_Port, // BEEP_GPIO_Port
+    .beep.pin = USER_LED_Pin,
     .type = BUZZER_ACTIVE,
   };
   Buzzer_Init(&beep,&beep_conf);
-  Buzzer_StartBeep(&beep,100,2,-1);
+  Buzzer_StartBeep(&beep,500,4,-1);
+  xTaskCreate(RunTime,      "Time_task",     128, NULL, 8, NULL);
+  xTaskCreate(LedTask,      "led_task",      128, NULL, 3, NULL);
+//  xTaskCreate(beepTask,      "beepTask",     128,  NULL,3,NULL);
+  // xTaskCreate(DisplayTime,  "Display_task",  128, NULL, 3, NULL);
+  xTaskCreate(UartTest,      "SoftWare_task", 512,NULL,10,NULL);
+  vTaskStartScheduler();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -155,14 +164,16 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
@@ -184,6 +195,12 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC;
+  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
 /* USER CODE BEGIN 4 */
@@ -201,7 +218,12 @@ void SystemClock_Config(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
-
+//    static uint8_t sys1ms_count = 0;
+//    static uint8_t sys5ms_count = 0;
+//    static uint8_t sys100ms_count = 0;
+//    static uint8_t sys250ms_count = 0;
+//    static uint16_t sys500ms_count = 0;
+//    static uint16_t sys1000ms_count = 0;
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM4) {
     HAL_IncTick();
@@ -214,7 +236,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   
   if(htim->Instance == TIM3)
   {
-	  Buzzer_TickHandler(&beep);
+	 
+
   }
   /* USER CODE END Callback 1 */
 }

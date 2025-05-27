@@ -20,13 +20,15 @@
 #include "task.h"
 #include "W25Qxx.h"
 #include "buzzer.h"
+#include "cJson.h"
+#include "rtc.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#define UART_BUFFSIZE 128
+#define UART_BUFFSIZE 64
 
 #define ON (1)
 #define OFF (0)
@@ -50,7 +52,8 @@ typedef struct
 {
 	uint8_t isUpdateTime :1;   // 是否更新
     uint8_t isUartReceive : 1; // 串口是否接收到数据
-    uint8_t Reserve_bits : 6;
+    uint8_t isSetRTC :1; // 是否设置RTC
+    uint8_t Reserve_bits : 5;
 } UserFlag_t;
 
 typedef enum
@@ -68,6 +71,7 @@ typedef union
 		uint8_t second;          // 秒
 		uint8_t hour;            // 小时
         uint8_t uartReceive[UART_BUFFSIZE];
+		uint8_t rx_byte;
     };
 
 } UserCommon_t;
@@ -76,6 +80,8 @@ extern volatile UserTim_t UserTim;       // 系统定时器
 extern volatile UserCommon_t UserCommon; // 用户公共体
 extern SoftwareUART_Handle_t SoftUart;
 extern Buzzer_Handle_t beep; // 蜂鸣器对象
+extern RTC_DateTypeDef GetData;  //获取日期结构体
+extern RTC_TimeTypeDef GetTime;   //获取时间结构体
 
 extern void Set_PWM_DutyCycle(float duty);
 //extern void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
@@ -83,6 +89,7 @@ extern void RunTime(void *p);
 extern void LedTask(void *p);
 extern void DisplayTime(void *p);
 extern void UartTest(void *p);
+extern void beepTask(void *p);
 
 #ifdef __cplusplus
 }
