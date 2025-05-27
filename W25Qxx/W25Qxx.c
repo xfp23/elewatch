@@ -157,7 +157,7 @@ W25Qxx_Status_t W25Qxx_ReadID(W25Qxx_Handle_t *handle, W25Qxx_ID_t *buffer)
  * @param size
  * @return W25Qxx_Status_t
  */
-W25Qxx_Status_t W25Qxx_Write(W25Qxx_Handle_t *handle, uint8_t *buffer, uint32_t addr, size_t size)
+W25Qxx_Status_t W25Qxx_Write(W25Qxx_Handle_t *handle, uint8_t *buffer, unsigned int addr, size_t size)
 {
 	W25Qxx_CheckHandle(handle);
 
@@ -221,7 +221,7 @@ W25Qxx_Status_t W25Qxx_Write(W25Qxx_Handle_t *handle, uint8_t *buffer, uint32_t 
 	return ret;
 }
 
-W25Qxx_Status_t W25Qxx_Read(W25Qxx_Handle_t *handle, uint8_t *buffer, uint32_t addr, size_t size)
+W25Qxx_Status_t W25Qxx_Read(W25Qxx_Handle_t *handle, uint8_t *buffer, unsigned int addr, size_t size)
 {
 	W25Qxx_CheckHandle(handle);
 
@@ -328,7 +328,7 @@ W25Qxx_Status_t W25Qxx_EraseChip(W25Qxx_Handle_t *handle)
 	return ret;
 }
 
-W25Qxx_Status_t W25Qxx_ReadCapcity(W25Qxx_Handle_t *handle, uint32_t *buffer)
+W25Qxx_Status_t W25Qxx_ReadCapcity(W25Qxx_Handle_t *handle, unsigned int *buffer)
 {
 	W25Qxx_CheckHandle(handle);
 
@@ -340,13 +340,13 @@ W25Qxx_Status_t W25Qxx_ReadCapcity(W25Qxx_Handle_t *handle, uint32_t *buffer)
 
 	W25Qxx_ChECKERR(ret);
 
-	(*handle)->capacity = (uint32_t)(data[6] << 16) | (uint16_t)(data[7] << 8) | (data[8]);
+	(*handle)->capacity = (unsigned int)(data[6] << 16) | (uint16_t)(data[7] << 8) | (data[8]);
 	*buffer = (*handle)->capacity;
 
 	return ret;
 }
 
-W25Qxx_Status_t W25Qxx_EraseSector(W25Qxx_Handle_t *handle, uint32_t addr)
+W25Qxx_Status_t W25Qxx_EraseSector(W25Qxx_Handle_t *handle, unsigned int addr)
 {
 	W25Qxx_CheckHandle(handle);
 
@@ -371,7 +371,7 @@ W25Qxx_Status_t W25Qxx_EraseSector(W25Qxx_Handle_t *handle, uint32_t addr)
 	return ret;
 }
 
-W25Qxx_Status_t W25QXX_WritePage(W25Qxx_Handle_t *handle, uint8_t *buffer, uint32_t addr, size_t size)
+W25Qxx_Status_t W25QXX_WritePage(W25Qxx_Handle_t *handle, uint8_t *buffer, unsigned int addr, size_t size)
 {
 	W25Qxx_CheckHandle(handle);
 	W25Qxx_Status_t ret = W25Qxx_WriteEnable(handle);
@@ -395,7 +395,7 @@ W25Qxx_Status_t W25QXX_WritePage(W25Qxx_Handle_t *handle, uint8_t *buffer, uint3
 	return ret;
 }
 
-W25Qxx_Status_t W25QXX_WriteNoCheck(W25Qxx_Handle_t *handle, uint8_t *buffer, uint32_t addr, size_t size)
+W25Qxx_Status_t W25QXX_WriteNoCheck(W25Qxx_Handle_t *handle, uint8_t *buffer, unsigned int addr, size_t size)
 {
 	W25Qxx_CheckHandle(handle);
 	W25Qxx_Status_t ret = W25QXX_OK;

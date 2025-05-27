@@ -158,7 +158,7 @@ typedef struct
     W25Qxx_HardWare_t HardWare; // 硬件
     W25Qxx_Flag_t flag;
     W25Qxx_ID_t ID;
-    uint32_t capacity;
+    unsigned int capacity;
     int timeout;
     uint8_t buffer[4096];
 } W25Qxx_Obj;
@@ -183,7 +183,7 @@ extern W25Qxx_Status_t W25Qxx_Init(W25Qxx_Handle_t *handle, W25Qxx_Conf_t *conf)
  * @param size 大小
  * @return W25Qxx_Status_t 状态
  */
-extern W25Qxx_Status_t W25Qxx_Read(W25Qxx_Handle_t *handle, uint8_t *buffer, uint32_t addr, size_t size);
+extern W25Qxx_Status_t W25Qxx_Read(W25Qxx_Handle_t *handle, uint8_t *buffer, unsigned int addr, size_t size);
 
 /**
  * @brief 向W25Qxx写入数据
@@ -194,7 +194,7 @@ extern W25Qxx_Status_t W25Qxx_Read(W25Qxx_Handle_t *handle, uint8_t *buffer, uin
  * @param size 大小
  * @return W25Qxx_Status_t 状态
  */
-extern W25Qxx_Status_t W25Qxx_Write(W25Qxx_Handle_t *handle, uint8_t *buffer, uint32_t addr, size_t size);
+extern W25Qxx_Status_t W25Qxx_Write(W25Qxx_Handle_t *handle, uint8_t *buffer, unsigned int addr, size_t size);
 
 /**
  * @brief 读取ID，型号
@@ -235,7 +235,7 @@ extern W25Qxx_Status_t W25Qxx_EraseChip(W25Qxx_Handle_t *handle);
  * @param buffer 存储容量的buffer
  * @return W25Qxx_Status_t  状态
  */
-extern W25Qxx_Status_t W25Qxx_ReadCapcity(W25Qxx_Handle_t *handle, uint32_t *buffer);
+extern W25Qxx_Status_t W25Qxx_ReadCapcity(W25Qxx_Handle_t *handle, unsigned int *buffer);
 
 /**
  * @brief
@@ -244,7 +244,7 @@ extern W25Qxx_Status_t W25Qxx_ReadCapcity(W25Qxx_Handle_t *handle, uint32_t *buf
  * @param addr
  * @return W25Qxx_Status_t
  */
-extern W25Qxx_Status_t W25Qxx_EraseSector(W25Qxx_Handle_t *handle, uint32_t addr);
+extern W25Qxx_Status_t W25Qxx_EraseSector(W25Qxx_Handle_t *handle, unsigned int addr);
 
 /**
  * @brief 向页写入数据
@@ -255,7 +255,7 @@ extern W25Qxx_Status_t W25Qxx_EraseSector(W25Qxx_Handle_t *handle, uint32_t addr
  * @param size 大小
  * @return W25Qxx_Status_t 状态
  */
-extern W25Qxx_Status_t W25QXX_WritePage(W25Qxx_Handle_t *handle, uint8_t *buffer, uint32_t addr, size_t size);
+extern W25Qxx_Status_t W25QXX_WritePage(W25Qxx_Handle_t *handle, uint8_t *buffer, unsigned int addr, size_t size);
 
 /**
  * @brief 不做校验直接往芯片写值
@@ -266,7 +266,7 @@ extern W25Qxx_Status_t W25QXX_WritePage(W25Qxx_Handle_t *handle, uint8_t *buffer
  * @param size 写入的大小 ： 字节
  * @return W25Qxx_Status_t 状态
  */
-extern W25Qxx_Status_t W25QXX_WriteNoCheck(W25Qxx_Handle_t *handle, uint8_t *buffer, uint32_t addr, size_t size);
+extern W25Qxx_Status_t W25QXX_WriteNoCheck(W25Qxx_Handle_t *handle, uint8_t *buffer, unsigned int addr, size_t size);
 
 /**
  * @brief 卸载W25Qxx
